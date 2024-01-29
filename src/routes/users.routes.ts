@@ -5,6 +5,7 @@ import { body } from 'express-validator';
 export const usersRouter = Router();
 
 const validator = [
+  body('id').isEmpty(),
   body('login').notEmpty(),
   body('email').notEmpty().isEmail(),
   body('password').notEmpty(),

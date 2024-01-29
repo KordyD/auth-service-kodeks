@@ -5,6 +5,7 @@ import { body } from 'express-validator';
 export const groupsRouter = Router();
 
 const validator = [
+  body('id').isEmpty(),
   body('name').notEmpty(),
   body('auth_origin_id').notEmpty(),
   body('description').notEmpty(),

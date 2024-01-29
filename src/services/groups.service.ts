@@ -2,7 +2,6 @@ import { prisma } from '../db';
 import { APIError } from '../errors';
 
 interface groupDataI {
-  id: number;
   name: string;
   auth_origin_id: number;
   comment: string;
