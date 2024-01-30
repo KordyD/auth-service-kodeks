@@ -67,6 +67,16 @@ class groupsController {
       next(error);
     }
   }
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userGroupData = await groupsService.deleteUserFromGroup(
+        Number(req.params.relationId)
+      );
+      res.json(userGroupData);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new groupsController();

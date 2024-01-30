@@ -17,3 +17,4 @@ groupsRouter.post('/create', validator, groupsController.createGroup);
 groupsRouter.put('/edit/:groupId', groupsController.editGroup);
 groupsRouter.delete('/delete/:groupId', groupsController.deleteGroup);
 groupsRouter.post('/add-user/:groupId/:userId', groupsController.addUser);
+groupsRouter.delete('/delete-user/:relationId', groupsController.deleteUser);

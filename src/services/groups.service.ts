@@ -104,6 +104,19 @@ class groupsService {
     });
     return userGroupData;
   }
+  async deleteUserFromGroup(id: number) {
+    const candidate = await prisma.users_groups.findFirst({
+      where: { id },
+    });
+    if (!candidate) {
+      throw APIError.BadRequestError("Relation doesn't exist");
+    }
+
+    const userGroupData = await prisma.users_groups.delete({
+      where: { id },
+    });
+    return userGroupData;
+  }
 }
 
 export default new groupsService();
