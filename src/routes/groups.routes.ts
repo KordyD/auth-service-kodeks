@@ -13,7 +13,7 @@ const validator = [
 groupsRouter.get('/', groupsController.getGroups);
 groupsRouter.get('/:groupId', groupsController.getGroup);
 groupsRouter.post('/create', validator, groupsController.createGroup);
-groupsRouter.put('/edit/:groupId', groupsController.editGroup);
+groupsRouter.put('/edit/:groupId', validator, groupsController.editGroup);
 groupsRouter.delete('/delete/:groupId', groupsController.deleteGroup);
 groupsRouter.post('/add-user/:groupId/:userId', groupsController.addUser);
 groupsRouter.delete('/delete-user/:relationId', groupsController.deleteUser);

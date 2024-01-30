@@ -16,5 +16,5 @@ const validator = [
 usersRouter.get('/', usersController.getUsers);
 usersRouter.get('/:userId', usersController.getUser);
 usersRouter.post('/create', validator, usersController.createUser);
-usersRouter.put('/edit/:userId', usersController.editUser);
+usersRouter.put('/edit/:userId', validator, usersController.editUser);
 usersRouter.delete('/delete/:userId', usersController.deleteUser);
