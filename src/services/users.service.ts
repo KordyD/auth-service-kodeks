@@ -2,6 +2,21 @@ import { hash } from 'bcrypt';
 import { prisma } from '../db';
 import { APIError } from '../errors';
 import { searchParamsI, userDataI } from './interfaces';
+import { Prisma } from '@prisma/client';
+
+const select: Prisma.usersSelect = {
+  login: true,
+  email: true,
+  id: true,
+  first_name: true,
+  last_name: true,
+  patronymic: true,
+  prefix: true,
+  suffix: true,
+  comment: true,
+  auth_origins: true,
+  departments: true,
+};
 
 class usersService {
   async getUsers(searchParams?: searchParamsI) {
@@ -46,19 +61,7 @@ class usersService {
         ],
       },
       take: Number(searchParams?.limit) || 20,
-      select: {
-        login: true,
-        email: true,
-        id: true,
-        first_name: true,
-        last_name: true,
-        patronymic: true,
-        prefix: true,
-        suffix: true,
-        comment: true,
-        auth_origin_id: true,
-        department_id: true,
-      },
+      select,
     });
     return users;
   }
@@ -75,21 +78,9 @@ class usersService {
         ],
       },
       select: {
-        login: true,
-        email: true,
-        id: true,
-        first_name: true,
-        last_name: true,
-        patronymic: true,
-        prefix: true,
-        suffix: true,
-        comment: true,
-        auth_origin_id: true,
-        department_id: true,
+        ...select,
         users_groups: {
-          select: {
-            groups: true,
-          },
+          select: { groups: true },
         },
       },
     });
@@ -135,19 +126,7 @@ class usersService {
         auth_origin_id: 2,
         department_id: userData.department_id,
       },
-      select: {
-        login: true,
-        email: true,
-        id: true,
-        first_name: true,
-        last_name: true,
-        patronymic: true,
-        prefix: true,
-        suffix: true,
-        comment: true,
-        auth_origin_id: true,
-        department_id: true,
-      },
+      select,
     });
     return user;
   }
@@ -176,19 +155,7 @@ class usersService {
         department_id: userData.department_id,
       },
 
-      select: {
-        login: true,
-        email: true,
-        id: true,
-        first_name: true,
-        last_name: true,
-        patronymic: true,
-        prefix: true,
-        suffix: true,
-        comment: true,
-        auth_origin_id: true,
-        department_id: true,
-      },
+      select,
     });
     return user;
   }
@@ -201,19 +168,7 @@ class usersService {
     }
     const user = await prisma.users.delete({
       where: { id },
-      select: {
-        login: true,
-        email: true,
-        id: true,
-        first_name: true,
-        last_name: true,
-        patronymic: true,
-        prefix: true,
-        suffix: true,
-        comment: true,
-        auth_origin_id: true,
-        department_id: true,
-      },
+      select,
     });
     return user;
   }
