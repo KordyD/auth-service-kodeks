@@ -1,14 +1,17 @@
 import { prisma } from '../db';
 import { APIError } from '../errors';
+import { moduleDataI, searchParamsI } from './interfaces';
 
-interface moduleDataI {
-  name: string;
-  service_id: number;
-}
 
 class modulesService {
-  async getModules() {
-    const modules = await prisma.modules.findMany();
+  async getModules(serviceId: number, searchParams?: searchParamsI) {
+    const modules = await prisma.modules.findMany({
+      where: {
+        service_id: serviceId,
+        name: { contains: searchParams?.search },
+      },
+      take: Number(searchParams?.limit) || 20,
+    });
     return modules;
   }
   async getModule(id: number) {

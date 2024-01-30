@@ -7,7 +7,7 @@ class usersController {
   constructor() {}
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const usersData = await usersService.getUsers();
+      const usersData = await usersService.getUsers(req.query);
       res.json(usersData);
     } catch (error) {
       next(error);

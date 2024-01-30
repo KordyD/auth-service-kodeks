@@ -1,13 +1,18 @@
 import { prisma } from '../db';
 import { APIError } from '../errors';
+import { searchParamsI, serviceDataI } from './interfaces';
 
-interface serviceDataI {
-  name: string;
-}
 
 class servicesService {
-  async getServices() {
-    const services = await prisma.services.findMany();
+  async getServices(searchParams?: searchParamsI) {
+    const services = await prisma.services.findMany({
+      where: {
+        name: {
+          contains: searchParams?.search || '',
+        },
+      },
+      take: Number(searchParams?.limit) || 20,
+    });
     return services;
   }
   async getService(id: number) {
@@ -30,7 +35,7 @@ class servicesService {
 
     const service = await prisma.services.create({
       data: {
-        name: serviceData.name
+        name: serviceData.name,
       },
     });
     return service;

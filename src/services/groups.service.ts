@@ -1,25 +1,20 @@
 import { prisma } from '../db';
 import { APIError } from '../errors';
+import { groupDataI, searchParamsI } from './interfaces';
 
-interface groupDataI {
-  name: string;
-  auth_origin_id: number;
-  comment: string;
-  description: string;
-}
 
 class groupsService {
-  async getGroups() {
+  async getGroups(searchParams?: searchParamsI) {
     const groups = await prisma.groups.findMany({
       where: {
         auth_origins: {
           name: 'Локальный',
         },
+        name: {
+          contains: searchParams?.search || '',
+        },
       },
-      include: {
-        access_rights: true,
-        users_groups: true,
-      },
+      take: Number(searchParams?.limit) || 20,
     });
     return groups;
   }
@@ -29,8 +24,11 @@ class groupsService {
         AND: [{ auth_origins: { name: 'Локальный' } }, { id }],
       },
       include: {
-        access_rights: true,
-        users_groups: true,
+        users_groups: {
+          select: {
+            users: true,
+          },
+        },
       },
     });
     return group;

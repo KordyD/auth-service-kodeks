@@ -1,44 +1,63 @@
 import { prisma } from '../db';
 import { APIError } from '../errors';
-
-interface userDataI {
-  first_name: string;
-  last_name?: string;
-  patronymic?: string;
-  auth_origin_id: number;
-  email: string;
-  login: string;
-  prefix?: string;
-  suffix?: string;
-  comment?: string;
-  password: string;
-  department_id: number;
-}
-
-const select = {
-  login: true,
-  email: true,
-  id: true,
-  first_name: true,
-  last_name: true,
-  patronymic: true,
-  prefix: true,
-  suffix: true,
-  comment: true,
-  auth_origin_id: true,
-  department_id: true,
-};
+import { searchParamsI, userDataI } from './interfaces';
 
 class usersService {
-  async getUsers() {
+  async getUsers(searchParams?: searchParamsI) {
     const users = await prisma.users.findMany({
       where: {
         auth_origins: {
           name: 'Локальный',
         },
+        OR: [
+          {
+            first_name: {
+              contains: searchParams?.search || '',
+            },
+          },
+          {
+            login: {
+              contains: searchParams?.search || '',
+            },
+          },
+          {
+            email: {
+              contains: searchParams?.search || '',
+            },
+          },
+          {
+            last_name: {
+              contains: searchParams?.search || '',
+            },
+          },
+          {
+            patronymic: {
+              contains: searchParams?.search || '',
+            },
+          },
+          {
+            departments: {
+              name: {
+                contains: searchParams?.search || '',
+              },
+            },
+          },
+        ],
       },
-
-      select,
+      take: Number(searchParams?.limit) || 20,
+      select: {
+        login: true,
+        email: true,
+        id: true,
+        first_name: true,
+        last_name: true,
+        patronymic: true,
+        prefix: true,
+        suffix: true,
+        comment: true,
+        auth_origin_id: true,
+        department_id: true,
+      },
     });
     return users;
   }
@@ -54,7 +73,24 @@ class usersService {
           { id },
         ],
       },
-      select,
+      select: {
+        login: true,
+        email: true,
+        id: true,
+        first_name: true,
+        last_name: true,
+        patronymic: true,
+        prefix: true,
+        suffix: true,
+        comment: true,
+        auth_origin_id: true,
+        department_id: true,
+        users_groups: {
+          select: {
+            groups: true,
+          },
+        },
+      },
     });
     return user;
   }
@@ -98,8 +134,17 @@ class usersService {
         department_id: userData.department_id,
       },
       select: {
-        password: false,
-        token: false,
+        login: true,
+        email: true,
+        id: true,
+        first_name: true,
+        last_name: true,
+        patronymic: true,
+        prefix: true,
+        suffix: true,
+        comment: true,
+        auth_origin_id: true,
+        department_id: true,
       },
     });
     return user;
@@ -127,7 +172,19 @@ class usersService {
         department_id: userData.department_id,
       },
 
-      select,
+      select: {
+        login: true,
+        email: true,
+        id: true,
+        first_name: true,
+        last_name: true,
+        patronymic: true,
+        prefix: true,
+        suffix: true,
+        comment: true,
+        auth_origin_id: true,
+        department_id: true,
+      },
     });
     return user;
   }
@@ -140,7 +197,19 @@ class usersService {
     }
     const user = await prisma.users.delete({
       where: { id },
-      select,
+      select: {
+        login: true,
+        email: true,
+        id: true,
+        first_name: true,
+        last_name: true,
+        patronymic: true,
+        prefix: true,
+        suffix: true,
+        comment: true,
+        auth_origin_id: true,
+        department_id: true,
+      },
     });
     return user;
   }

@@ -4,9 +4,12 @@ import { APIError } from '../errors';
 import modulesService from '../services/modules.service';
 
 class modulesController {
-  async getModules(req: Request, res: Response, next: NextFunction) {
+  async getModulesForService(req: Request, res: Response, next: NextFunction) {
     try {
-      const modulesData = await modulesService.getModules();
+      const modulesData = await modulesService.getModules(
+        Number(req.params.serviceId),
+        req.query
+      );
       res.json(modulesData);
     } catch (error) {
       next(error);

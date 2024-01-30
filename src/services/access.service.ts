@@ -1,11 +1,6 @@
 import { prisma } from '../db';
 import { APIError } from '../errors';
-
-interface accessDataI {
-  module_id: number;
-  user_id?: number;
-  group_id?: number;
-}
+import { accessDataI } from './interfaces';
 
 class accessService {
   async addAccessRights(accessData: accessDataI) {

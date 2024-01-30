@@ -7,7 +7,7 @@ class groupsController {
   constructor() {}
   async getGroups(req: Request, res: Response, next: NextFunction) {
     try {
-      const groupsData = await groupsService.getGroups();
+      const groupsData = await groupsService.getGroups(req.query);
       res.json(groupsData);
     } catch (error) {
       next(error);

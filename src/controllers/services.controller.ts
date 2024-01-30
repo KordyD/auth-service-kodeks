@@ -6,7 +6,7 @@ import servicesService from '../services/services.service';
 class servicesController {
   async getServices(req: Request, res: Response, next: NextFunction) {
     try {
-      const servicesData = await servicesService.getServices();
+      const servicesData = await servicesService.getServices(req.query);
       res.json(servicesData);
     } catch (error) {
       next(error);

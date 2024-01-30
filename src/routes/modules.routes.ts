@@ -6,7 +6,7 @@ export const modulesRouter = Router();
 
 const validator = [body('name').notEmpty(), body('service_id').notEmpty()];
 
-modulesRouter.get('/', modulesController.getModules);
+modulesRouter.get('/:serviceId', modulesController.getModulesForService);
 modulesRouter.get('/:moduleId', modulesController.getModule);
 modulesRouter.post('/create', validator, modulesController.createModule);
 modulesRouter.put('/edit/:moduleId', modulesController.editModule);
