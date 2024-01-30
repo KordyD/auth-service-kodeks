@@ -56,7 +56,12 @@ class groupsService {
     }
 
     const group = await prisma.groups.create({
-      data: groupData,
+      data: {
+        name: groupData.name,
+        description: groupData.description,
+        comment: groupData.comment,
+        auth_origin_id: 2,
+      },
     });
     return group;
   }
@@ -69,7 +74,12 @@ class groupsService {
     }
     const group = await prisma.groups.update({
       where: { id },
-      data: groupData,
+      data: {
+        name: groupData.name,
+        description: groupData.description,
+        comment: groupData.comment,
+        auth_origin_id: 2,
+      },
     });
     return group;
   }

@@ -84,7 +84,19 @@ class usersService {
       throw APIError.BadRequestError("Auth origin doesn't exist");
     }
     const user = await prisma.users.create({
-      data: userData,
+      data: {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        patronymic: userData.patronymic,
+        password: userData.password,
+        login: userData.login,
+        email: userData.email,
+        prefix: userData.prefix,
+        suffix: userData.suffix,
+        comment: userData.comment,
+        auth_origin_id: 2,
+        department_id: userData.department_id,
+      },
       select: {
         password: false,
         token: false,
@@ -101,7 +113,20 @@ class usersService {
     }
     const user = await prisma.users.update({
       where: { id },
-      data: userData,
+      data: {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        patronymic: userData.patronymic,
+        password: userData.password,
+        login: userData.login,
+        email: userData.email,
+        prefix: userData.prefix,
+        suffix: userData.suffix,
+        comment: userData.comment,
+        auth_origin_id: 2,
+        department_id: userData.department_id,
+      },
+
       select,
     });
     return user;

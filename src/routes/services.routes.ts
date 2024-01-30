@@ -4,7 +4,7 @@ import { body } from 'express-validator';
 
 export const servicesRouter = Router();
 
-const validator = [body('name').notEmpty(), body('id').isEmpty()];
+const validator = [body('name').notEmpty()];
 
 servicesRouter.get('/', servicesController.getServices);
 servicesRouter.get('/:serviceId', servicesController.getService);

@@ -28,7 +28,11 @@ class accessService {
       throw APIError.BadRequestError("User doesn't exist");
     }
     const accessRights = await prisma.access_rights.create({
-      data: accessData,
+      data: {
+        module_id: accessData.module_id,
+        group_id: accessData.group_id,
+        user_id: accessData.user_id,
+      },
     });
     return accessRights;
   }

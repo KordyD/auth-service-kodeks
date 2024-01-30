@@ -40,7 +40,10 @@ class modulesService {
     }
 
     const module = await prisma.modules.create({
-      data: moduleData,
+      data: {
+        name: moduleData.name,
+        service_id: moduleData.service_id,
+      },
     });
     return module;
   }
@@ -53,7 +56,10 @@ class modulesService {
     }
     const module = await prisma.modules.update({
       where: { id },
-      data: moduleData,
+      data: {
+        name: moduleData.name,
+        service_id: moduleData.service_id,
+      },
     });
     return module;
   }

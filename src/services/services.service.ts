@@ -29,7 +29,9 @@ class servicesService {
     }
 
     const service = await prisma.services.create({
-      data: serviceData,
+      data: {
+        name: serviceData.name
+      },
     });
     return service;
   }
@@ -42,7 +44,9 @@ class servicesService {
     }
     const service = await prisma.services.update({
       where: { id },
-      data: serviceData,
+      data: {
+        name: serviceData.name,
+      },
     });
     return service;
   }
