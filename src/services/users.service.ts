@@ -1,3 +1,4 @@
+import { hash } from 'bcrypt';
 import { prisma } from '../db';
 import { APIError } from '../errors';
 import { searchParamsI, userDataI } from './interfaces';
@@ -119,12 +120,13 @@ class usersService {
     if (!isAuthOriginExists) {
       throw APIError.BadRequestError("Auth origin doesn't exist");
     }
+    const hashedPassword = await hash(userData.password, 10);
     const user = await prisma.users.create({
       data: {
         first_name: userData.first_name,
         last_name: userData.last_name,
         patronymic: userData.patronymic,
-        password: userData.password,
+        password: hashedPassword,
         login: userData.login,
         email: userData.email,
         prefix: userData.prefix,
@@ -156,13 +158,15 @@ class usersService {
     if (!candidate) {
       throw APIError.BadRequestError("User doesn't exist");
     }
+    const hashedPassword = await hash(userData.password, 10);
+
     const user = await prisma.users.update({
       where: { id },
       data: {
         first_name: userData.first_name,
         last_name: userData.last_name,
         patronymic: userData.patronymic,
-        password: userData.password,
+        password: hashedPassword,
         login: userData.login,
         email: userData.email,
         prefix: userData.prefix,
