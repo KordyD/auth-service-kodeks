@@ -29,6 +29,16 @@ class modulesService {
       throw APIError.BadRequestError('Module already exists');
     }
 
+    const isServiceExists = await prisma.services.findFirst({
+      where: {
+        id: moduleData.service_id,
+      },
+    });
+
+    if (!isServiceExists) {
+      throw APIError.BadRequestError("Service doesn't exists");
+    }
+
     const module = await prisma.modules.create({
       data: moduleData,
     });
