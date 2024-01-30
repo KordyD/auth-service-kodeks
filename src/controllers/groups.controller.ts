@@ -56,6 +56,17 @@ class groupsController {
       next(error);
     }
   }
+  async addUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userGroupData = await groupsService.addUserToGroup(
+        Number(req.params.groupId),
+        Number(req.params.userId)
+      );
+      res.json(userGroupData);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new groupsController();

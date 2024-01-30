@@ -16,6 +16,10 @@ class groupsService {
           name: 'Локальный',
         },
       },
+      include: {
+        access_rights: true,
+        users_groups: true,
+      },
     });
     return groups;
   }
@@ -23,6 +27,10 @@ class groupsService {
     const group = await prisma.groups.findFirst({
       where: {
         AND: [{ auth_origins: { name: 'Локальный' } }, { id }],
+      },
+      include: {
+        access_rights: true,
+        users_groups: true,
       },
     });
     return group;
@@ -76,6 +84,25 @@ class groupsService {
       where: { id },
     });
     return group;
+  }
+  async addUserToGroup(groupId: number, userId: number) {
+    const candidateGroup = await prisma.groups.findFirst({
+      where: { id: groupId },
+    });
+    if (!candidateGroup) {
+      throw APIError.BadRequestError("Group doesn't exist");
+    }
+    const candidateUser = await prisma.users.findFirst({
+      where: { id: userId },
+    });
+    if (!candidateUser) {
+      throw APIError.BadRequestError("User doesn't exist");
+    }
+
+    const userGroupData = await prisma.users_groups.create({
+      data: { user_id: userId, group_id: groupId },
+    });
+    return userGroupData;
   }
 }
 
