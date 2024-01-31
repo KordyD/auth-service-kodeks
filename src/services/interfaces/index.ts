@@ -38,3 +38,8 @@ export interface moduleDataI {
 export interface serviceDataI {
   name: string;
 }
+
+export interface authDataI {
+  login: string;
+  password: string;
+}

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import usersController from '../controllers/users.controller';
 import { body } from 'express-validator';
+import { tokenCheckMiddleware } from '../middlewares/tokenCheck.middleware';
 
 export const usersRouter = Router();
 
@@ -13,8 +14,22 @@ const validator = [
   body('auth_origin_id').notEmpty(),
 ];
 
-usersRouter.get('/', usersController.getUsers);
-usersRouter.get('/:userId', usersController.getUser);
-usersRouter.post('/create', validator, usersController.createUser);
-usersRouter.put('/edit/:userId', validator, usersController.editUser);
-usersRouter.delete('/delete/:userId', usersController.deleteUser);
+usersRouter.get('/', tokenCheckMiddleware, usersController.getUsers);
+usersRouter.get('/:userId', tokenCheckMiddleware, usersController.getUser);
+usersRouter.post(
+  '/create',
+  validator,
+  tokenCheckMiddleware,
+  usersController.createUser
+);
+usersRouter.put(
+  '/edit/:userId',
+  validator,
+  tokenCheckMiddleware,
+  usersController.editUser
+);
+usersRouter.delete(
+  '/delete/:userId',
+  tokenCheckMiddleware,
+  usersController.deleteUser
+);

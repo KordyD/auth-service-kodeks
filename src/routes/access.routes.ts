@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import accessController from '../controllers/access.controller';
 import { body } from 'express-validator';
+import { tokenCheckMiddleware } from '../middlewares/tokenCheck.middleware';
 
 export const accessRouter = Router();
 
@@ -26,6 +27,19 @@ const validator = [
   }),
 ];
 
-accessRouter.get('/:moduleId', accessController.getAccessRightsForModule);
-accessRouter.post('/provide', validator, accessController.addAccessRights);
-accessRouter.delete('/delete', accessController.deleteAccessRights);
+accessRouter.get(
+  '/:moduleId',
+  tokenCheckMiddleware,
+  accessController.getAccessRightsForModule
+);
+accessRouter.post(
+  '/provide',
+  validator,
+  tokenCheckMiddleware,
+  accessController.addAccessRights
+);
+accessRouter.delete(
+  '/delete',
+  tokenCheckMiddleware,
+  accessController.deleteAccessRights
+);

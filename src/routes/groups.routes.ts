@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import groupsController from '../controllers/groups.controller';
 import { body } from 'express-validator';
+import { tokenCheckMiddleware } from '../middlewares/tokenCheck.middleware';
 
 export const groupsRouter = Router();
 
@@ -10,10 +11,32 @@ const validator = [
   body('description').notEmpty(),
 ];
 
-groupsRouter.get('/', groupsController.getGroups);
-groupsRouter.get('/:groupId', groupsController.getGroup);
-groupsRouter.post('/create', validator, groupsController.createGroup);
-groupsRouter.put('/edit/:groupId', validator, groupsController.editGroup);
-groupsRouter.delete('/delete/:groupId', groupsController.deleteGroup);
-groupsRouter.post('/add-user/:groupId/:userId', groupsController.addUser);
-groupsRouter.delete('/delete-user/:relationId', groupsController.deleteUser);
+groupsRouter.get('/', tokenCheckMiddleware, groupsController.getGroups);
+groupsRouter.get('/:groupId', tokenCheckMiddleware, groupsController.getGroup);
+groupsRouter.post(
+  '/create',
+  validator,
+  tokenCheckMiddleware,
+  groupsController.createGroup
+);
+groupsRouter.put(
+  '/edit/:groupId',
+  validator,
+  tokenCheckMiddleware,
+  groupsController.editGroup
+);
+groupsRouter.delete(
+  '/delete/:groupId',
+  tokenCheckMiddleware,
+  groupsController.deleteGroup
+);
+groupsRouter.post(
+  '/add-user/:groupId/:userId',
+  tokenCheckMiddleware,
+  groupsController.addUser
+);
+groupsRouter.delete(
+  '/delete-user/:relationId',
+  tokenCheckMiddleware,
+  groupsController.deleteUser
+);
