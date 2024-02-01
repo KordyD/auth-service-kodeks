@@ -25,4 +25,8 @@ servicesRouter.put(
   tokenCheckMiddleware,
   servicesController.editService
 );
-servicesRouter.delete('/delete/:serviceId', servicesController.deleteService);
+servicesRouter.delete(
+  '/delete/:serviceId',
+  tokenCheckMiddleware,
+  servicesController.deleteService
+);

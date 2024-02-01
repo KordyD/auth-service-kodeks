@@ -3,12 +3,6 @@ import { prisma } from '../src/db';
 import { faker } from '@faker-js/faker';
 
 export const setup = async () => {
-  await prisma.users.deleteMany({});
-  await prisma.departments.deleteMany({});
-  await prisma.groups.deleteMany({});
-  await prisma.users_groups.deleteMany({});
-  await prisma.auth_origins.deleteMany({});
-
   await prisma.auth_origins.create({
     data: { name: 'Домен' },
   });
@@ -47,8 +41,19 @@ export const setup = async () => {
       auth_origin_id: authOrigin.id,
     },
   });
+  const testService = await prisma.services.create({
+    data: {
+      name: faker.person.jobDescriptor(),
+    },
+  });
+  const testModule = await prisma.modules.create({
+    data: {
+      name: faker.person.jobDescriptor(),
+      service_id: testService.id,
+    },
+  });
 
-  return { testUser, testGroup };
+  return { testUser, testGroup, testService, testModule };
 };
 
 export const teardown = async () => {
@@ -56,5 +61,7 @@ export const teardown = async () => {
   await prisma.departments.deleteMany({});
   await prisma.groups.deleteMany({});
   await prisma.users_groups.deleteMany({});
+  await prisma.modules.deleteMany({});
+  await prisma.services.deleteMany({});
   await prisma.auth_origins.deleteMany({});
 };
