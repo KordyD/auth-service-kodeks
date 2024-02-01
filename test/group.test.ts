@@ -4,7 +4,6 @@ import { faker } from '@faker-js/faker';
 import { app } from '../src';
 import { setup, teardown } from './setup';
 import { Prisma } from '@prisma/client';
-import { prisma } from '../src/db';
 
 chai.use(chaiHttp);
 describe('Group test collection', () => {
