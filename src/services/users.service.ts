@@ -87,14 +87,14 @@ class usersService {
     return user;
   }
   async createUser(userData: userDataI) {
-    const isDepartmentExists = await prisma.departments.findFirst({
+    const department = await prisma.departments.findFirst({
       where: {
-        id: userData.department_id,
+        name: userData.department,
       },
     });
-    const isAuthOriginExists = await prisma.auth_origins.findFirst({
+    const authOrigin = await prisma.auth_origins.findFirst({
       where: {
-        id: userData.auth_origin_id,
+        name: 'Локальный',
       },
     });
     const candidate = await prisma.users.findFirst({
@@ -105,11 +105,11 @@ class usersService {
     if (candidate) {
       throw APIError.BadRequestError('User already exists');
     }
-    if (!isDepartmentExists) {
+    if (!department) {
       throw APIError.BadRequestError("Department doesn't exist");
     }
-    if (!isAuthOriginExists) {
-      throw APIError.BadRequestError("Auth origin doesn't exist");
+    if (!authOrigin) {
+      throw APIError.BadRequestError("Auth origin 'Локальный' doesn't exist");
     }
     const hashedPassword = await hash(userData.password, 10);
     const user = await prisma.users.create({
@@ -123,17 +123,25 @@ class usersService {
         prefix: userData.prefix,
         suffix: userData.suffix,
         comment: userData.comment,
-        auth_origin_id: 2,
-        department_id: userData.department_id,
+        auth_origin_id: authOrigin.id,
+        department_id: department.id,
       },
       select,
     });
     return user;
   }
   async editUser(id: number, userData: userDataI) {
+    const department = await prisma.departments.findFirst({
+      where: {
+        name: userData.department,
+      },
+    });
     const candidate = await prisma.users.findFirst({
       where: { id },
     });
+    if (!department) {
+      throw APIError.BadRequestError("Department doesn't exist");
+    }
     if (!candidate) {
       throw APIError.BadRequestError("User doesn't exist");
     }
@@ -151,8 +159,7 @@ class usersService {
         prefix: userData.prefix,
         suffix: userData.suffix,
         comment: userData.comment,
-        auth_origin_id: 2,
-        department_id: userData.department_id,
+        department_id: department.id,
       },
 
       select,

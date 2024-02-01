@@ -2,7 +2,6 @@ import { prisma } from '../db';
 import { APIError } from '../errors';
 import { groupDataI, searchParamsI } from './interfaces';
 
-
 class groupsService {
   async getGroups(searchParams?: searchParamsI) {
     const groups = await prisma.groups.findMany({
@@ -34,14 +33,14 @@ class groupsService {
     return group;
   }
   async createGroup(groupData: groupDataI) {
-    const isAuthOriginExists = await prisma.auth_origins.findFirst({
+    const authOrigin = await prisma.auth_origins.findFirst({
       where: {
-        id: groupData.auth_origin_id,
+        name: 'Локальный',
       },
     });
 
-    if (!isAuthOriginExists) {
-      throw APIError.BadRequestError("Auth origin doesn't exist");
+    if (!authOrigin) {
+      throw APIError.BadRequestError("Auth origin 'Локальный' doesn't exist");
     }
 
     const candidate = await prisma.groups.findFirst({
@@ -58,7 +57,7 @@ class groupsService {
         name: groupData.name,
         description: groupData.description,
         comment: groupData.comment,
-        auth_origin_id: 2,
+        auth_origin_id: authOrigin.id,
       },
     });
     return group;
@@ -76,7 +75,6 @@ class groupsService {
         name: groupData.name,
         description: groupData.description,
         comment: groupData.comment,
-        auth_origin_id: 2,
       },
     });
     return group;

@@ -7,14 +7,13 @@ export interface userDataI {
   first_name: string;
   last_name?: string;
   patronymic?: string;
-  auth_origin_id: number;
   email: string;
   login: string;
   prefix?: string;
   suffix?: string;
   comment?: string;
   password: string;
-  department_id: number;
+  department: string;
 }
 
 export interface accessDataI {
@@ -25,7 +24,6 @@ export interface accessDataI {
 
 export interface groupDataI {
   name: string;
-  auth_origin_id: number;
   comment: string;
   description: string;
 }

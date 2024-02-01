@@ -10,8 +10,7 @@ const validator = [
   body('email').notEmpty().isEmail(),
   body('password').notEmpty(),
   body('first_name').notEmpty(),
-  body('department_id').notEmpty(),
-  body('auth_origin_id').notEmpty(),
+  body('department').notEmpty(),
 ];
 
 usersRouter.get('/', tokenCheckMiddleware, usersController.getUsers);
