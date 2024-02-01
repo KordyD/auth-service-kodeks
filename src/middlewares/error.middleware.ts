@@ -8,7 +8,9 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err);
+  if (process.env.NODE_ENV == 'development') {
+    console.error(err);
+  }
   if (err instanceof PrismaClientValidationError) {
     return res.status(403).json({ message: 'Invalid json' });
   }
