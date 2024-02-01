@@ -24,8 +24,8 @@ export interface accessDataI {
 
 export interface groupDataI {
   name: string;
-  comment: string;
-  description: string;
+  comment?: string;
+  description?: string;
 }
 
 export interface moduleDataI {

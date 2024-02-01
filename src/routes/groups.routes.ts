@@ -5,7 +5,7 @@ import { tokenCheckMiddleware } from '../middlewares/tokenCheck.middleware';
 
 export const groupsRouter = Router();
 
-const validator = [body('name').notEmpty(), body('description').notEmpty()];
+const validator = [body('name').notEmpty()];
 
 groupsRouter.get('/', tokenCheckMiddleware, groupsController.getGroups);
 groupsRouter.get('/:groupId', tokenCheckMiddleware, groupsController.getGroup);
