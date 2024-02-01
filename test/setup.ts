@@ -53,10 +53,18 @@ export const setup = async () => {
     },
   });
 
-  return { testUser, testGroup, testService, testModule };
+  const testAccess = await prisma.access_rights.create({
+    data: {
+      module_id: testModule.id,
+      group_id: testGroup.id,
+    },
+  });
+
+  return { testUser, testGroup, testService, testModule, testAccess };
 };
 
 export const teardown = async () => {
+  await prisma.access_rights.deleteMany({});
   await prisma.users.deleteMany({});
   await prisma.departments.deleteMany({});
   await prisma.groups.deleteMany({});
