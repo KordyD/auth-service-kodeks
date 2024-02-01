@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { app } from '../src';
 import { setup, teardown } from './setup';
 import { Prisma } from '@prisma/client';
+import { prisma } from '../src/db';
 
 chai.use(chaiHttp);
 describe('Modules test collection', () => {
@@ -35,11 +36,10 @@ describe('Modules test collection', () => {
       .send(service);
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/services/${res.body.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.not.null;
+    const serviceData = await prisma.services.findFirst({
+      where: { id: res.body.id },
+    });
+    expect(serviceData).to.be.not.null;
   });
 
   it('Gets modules for service', async () => {
@@ -64,11 +64,10 @@ describe('Modules test collection', () => {
       .send(module);
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/modules/${res.body.service_id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.not.null;
+    const moduleData = await prisma.modules.findFirst({
+      where: { id: res.body.id },
+    });
+    expect(moduleData).to.be.not.null;
   });
 
   it('Deletes module', async () => {
@@ -78,11 +77,10 @@ describe('Modules test collection', () => {
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/modules/${testModule.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.empty;
+    const moduleData = await prisma.modules.findFirst({
+      where: { id: testModule.id },
+    });
+    expect(moduleData).to.be.null;
   });
 
   it('Returns error if unathorized for module', async () => {
@@ -97,11 +95,10 @@ describe('Modules test collection', () => {
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/services/${testService.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.null;
+    const serviceData = await prisma.services.findFirst({
+      where: { id: testService.id },
+    });
+    expect(serviceData).to.be.null;
   });
 
   it('Returns error if unathorized for service', async () => {

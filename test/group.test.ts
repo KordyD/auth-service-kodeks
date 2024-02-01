@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { app } from '../src';
 import { setup, teardown } from './setup';
 import { Prisma } from '@prisma/client';
+import { prisma } from '../src/db';
 
 chai.use(chaiHttp);
 describe('Group test collection', () => {
@@ -64,11 +65,10 @@ describe('Group test collection', () => {
       .send(group);
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/groups/${res.body.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.not.null;
+    const groupData = await prisma.groups.findFirst({
+      where: { id: res.body.id },
+    });
+    expect(groupData).to.be.not.null;
   });
 
   it('Adds user to group', async () => {
@@ -78,15 +78,13 @@ describe('Group test collection', () => {
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/groups/${testGroup.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(
-      findRes.body.users_groups.some(
-        (user: { users: User }) => user.users.login === testUser.login
-      )
-    ).to.be.true;
+    const groupData = await prisma.groups.findFirst({
+      where: {
+        id: testGroup.id,
+        users_groups: { some: { users: { login: testUser.login } } },
+      },
+    });
+    expect(groupData).to.be.not.null;
   });
 
   it('Deletes group', async () => {
@@ -96,11 +94,10 @@ describe('Group test collection', () => {
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/groups/${testGroup.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.null;
+    const groupData = await prisma.groups.findFirst({
+      where: { id: testGroup.id },
+    });
+    expect(groupData).to.be.null;
   });
 
   it('Returns error if unathorized', async () => {

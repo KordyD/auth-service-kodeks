@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { app } from '../src';
 import { setup, teardown } from './setup';
 import { Prisma } from '@prisma/client';
+import { prisma } from '../src/db';
 
 chai.use(chaiHttp);
 describe('Access provider test collection', () => {
@@ -52,13 +53,10 @@ describe('Access provider test collection', () => {
       .send(access);
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/access/${testModule.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(
-      findRes.body.some((access: Access) => access.user_id === testUser.id)
-    ).to.be.true;
+    const accessData = await prisma.access_rights.findFirst({
+      where: { user_id: testUser.id },
+    });
+    expect(accessData).to.be.not.null;
   });
 
   it('Deletes access from group', async () => {
@@ -69,18 +67,15 @@ describe('Access provider test collection', () => {
       .send({ module_id: testModule.id, group_id: testGroup.id });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/access/${testModule.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(
-      findRes.body.some((access: Access) => access.group_id === testGroup.id)
-    ).to.be.false;
+    const accessData = await prisma.access_rights.findFirst({
+      where: { group_id: testGroup.id },
+    });
+    expect(accessData).to.be.null;
   });
 
   it('Returns error if unathorized', async () => {
-    const findRes = await chai.request(app).get(`/access/${testModule.id}`);
-    expect(findRes.status).to.be.equal(401);
+    const res = await chai.request(app).get(`/access/${testModule.id}`);
+    expect(res.status).to.be.equal(401);
   });
 
   after(teardown);

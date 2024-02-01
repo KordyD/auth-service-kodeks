@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { app } from '../src';
 import { setup, teardown } from './setup';
 import { Prisma } from '@prisma/client';
+import { prisma } from '../src/db';
 
 chai.use(chaiHttp);
 describe('User test collection', () => {
@@ -64,11 +65,10 @@ describe('User test collection', () => {
       .send(user);
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/users/${res.body.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.not.null;
+    const userData = await prisma.users.findFirst({
+      where: { id: res.body.id },
+    });
+    expect(userData).to.be.not.null;
   });
 
   it('Deletes user', async () => {
@@ -78,11 +78,10 @@ describe('User test collection', () => {
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body).to.be.not.empty;
-    const findRes = await chai
-      .request(app)
-      .get(`/users/${testUser.id}`)
-      .auth(authToken, { type: 'bearer' });
-    expect(findRes.body).to.be.null;
+    const userData = await prisma.users.findFirst({
+      where: { id: testUser.id },
+    });
+    expect(userData).to.be.null;
   });
 
   it('Returns error if unathorized', async () => {
