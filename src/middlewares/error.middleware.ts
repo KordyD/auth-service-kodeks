@@ -11,8 +11,11 @@ export const errorMiddleware = (
   if (process.env.NODE_ENV == 'development') {
     console.error(err);
   }
-  if (err instanceof PrismaClientValidationError) {
-    return res.status(403).json({ message: 'Invalid json' });
+  if (
+    err instanceof PrismaClientValidationError ||
+    err instanceof SyntaxError
+  ) {
+    return res.status(403).json({ message: 'Invalid data' });
   }
   if (err instanceof APIError) {
     return res
