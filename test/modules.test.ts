@@ -45,7 +45,7 @@ describe('Modules test collection', () => {
   it('Gets modules for service', async () => {
     const res = await chai
       .request(app)
-      .get(`/modules/${testService.id}`)
+      .get(`/modules/all/${testService.id}`)
       .auth(authToken, { type: 'bearer' });
     expect(res).to.have.status(200);
     expect(res.body.some((module: Module) => module.name === testModule.name))
