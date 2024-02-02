@@ -13,13 +13,13 @@ class accessService {
     const candidateGroup = await prisma.groups.findFirst({
       where: { id: accessData.group_id },
     });
-    if (!candidateGroup) {
+    if (!candidateGroup && accessData.group_id) {
       throw APIError.BadRequestError("Group doesn't exist");
     }
     const candidateUser = await prisma.users.findFirst({
       where: { id: accessData.user_id },
     });
-    if (!candidateUser) {
+    if (!candidateUser && accessData.user_id) {
       throw APIError.BadRequestError("User doesn't exist");
     }
     const accessRights = await prisma.access_rights.create({
