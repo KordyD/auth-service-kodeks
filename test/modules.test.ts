@@ -52,6 +52,15 @@ describe('Modules test collection', () => {
       .to.be.true;
   });
 
+  it('Gets module by id', async () => {
+    const res = await chai
+      .request(app)
+      .get(`/modules/${testModule.id}`)
+      .auth(authToken, { type: 'bearer' });
+    expect(res).to.have.status(200);
+    expect(res.body).to.have.property('name').that.equals(testModule.name);
+  });
+
   it('Creates module', async () => {
     const module = {
       name: faker.person.jobDescriptor(),
