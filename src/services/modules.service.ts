@@ -2,7 +2,6 @@ import { prisma } from '../db';
 import { APIError } from '../errors';
 import { moduleDataI, searchParamsI } from './interfaces';
 
-
 class modulesService {
   async getModules(serviceId: number, searchParams?: searchParamsI) {
     const modules = await prisma.modules.findMany({
@@ -56,6 +55,15 @@ class modulesService {
     });
     if (!candidate) {
       throw APIError.BadRequestError("Module doesn't exist");
+    }
+    const isServiceExists = await prisma.services.findFirst({
+      where: {
+        id: moduleData.service_id,
+      },
+    });
+
+    if (!isServiceExists) {
+      throw APIError.BadRequestError("Service doesn't exists");
     }
     const module = await prisma.modules.update({
       where: { id },

@@ -18,7 +18,7 @@ class modulesController {
   async getModule(req: Request, res: Response, next: NextFunction) {
     try {
       const moduleData = await modulesService.getModule(
-        Number(req.params.serviceId)
+        Number(req.params.moduleId)
       );
       res.json(moduleData);
     } catch (error) {
@@ -40,7 +40,7 @@ class modulesController {
   async editModule(req: Request, res: Response, next: NextFunction) {
     try {
       const moduleData = await modulesService.editModule(
-        Number(req.params.serviceId),
+        Number(req.params.moduleId),
         req.body
       );
       res.json(moduleData);
